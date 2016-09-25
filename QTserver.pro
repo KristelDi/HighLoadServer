@@ -10,7 +10,9 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    server.cpp
+    server.cpp \
+    qsocketthread.cpp
 
 HEADERS += \
-    server.h
+    server.h \
+    qsocketthread.h

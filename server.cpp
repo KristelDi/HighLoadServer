@@ -12,30 +12,10 @@ Server::Server(int port, QObject *parent) :
 
 }
 
-
 void Server::incomingConnection(int handle)
 {
-    QTcpSocket * socket = new QTcpSocket(this);
-    socket -> setSocketDescriptor(handle);
-
-    connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
-    connect(socket, SIGNAL(disconect()), this, SLOT(onDisconect()));
-}
-
-void Server::onReadyRead()
-{
-    QTcpSocket * socket = qobject_cast<QTcpSocket*>(sender());
-    qDebug() << socket -> readAll();
-
-    QString response = "HTTP/1.1 200 OK\r\n\r\n%q";
-    socket->write(response.arg(QTime::currentTime().toString()).toLatin1());
-    socket ->disconnectFromHost();
-}
-
-void Server::onDisconect()
-{
-    QTcpSocket * socket = qobject_cast<QTcpSocket*>(sender());
-    socket->close();
-    socket->deleteLater();
+    QSocketThread* thread = new QSocketThread(handle);
+    connect(thread, SIGNAL(finished()),thread, SLOT(deleteLater()));
+    thread->start();
 
 }
